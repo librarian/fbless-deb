@@ -1,0 +1,14 @@
+Source: fbless
+Section: shells
+Priority: optional
+Maintainer: Nikita Menkovich (librarian)
+Build-Depends: debhelper (>=7.0.0), python-support (>= 0.6), cdbs (>= 0.4.49) 
+XS-Python-Version: >=2.4
+Standards-Version: 0.2.1
+
+Package: fbless
+Architecture: all
+Homepage: http://pybookreader.narod.ru/
+XB-Python-Version: ${python:Versions}
+Depends: ${misc:Depends}, ${python:Depends}, libncurses5 (>= 5.0)
+Description: Curses based FictionBook2 viewer.
