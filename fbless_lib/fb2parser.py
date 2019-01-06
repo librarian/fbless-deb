@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: koi8-r; -*-
+# -*- mode: python; coding: UTF-8; -*-
 
 import sys, string
-from cStringIO import StringIO
+from io import StringIO
 import xml.sax
 import xml.parsers.expat
 
-from paragraph import Paragraph, attr
+from fbless_lib.paragraph import Paragraph, attr
 
 
 class StopParsing(Exception):
@@ -143,14 +143,14 @@ class ContentHandler:
 def fb2parse(data):
 
     if not data.startswith('<?xml'):
-        print 'Warning: file is not an XML file. Skipped.'
+        print ('Warning: file is not an XML file. Skipped.')
         return None
 
     global _parser
 
     # remove invalid chars
-    tab = string.maketrans('', '')
-    data = data.translate(tab, '\07\032') # XXX: add other invalid chars here
+    tab = bytes.maketrans(b'', b'')
+    data = data.translate('\07\032') # XXX: add other invalid chars here
 
     content_handler = ContentHandler()
 
