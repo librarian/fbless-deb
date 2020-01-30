@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: koi8-r; -*-
+# -*- mode: python; coding: UTF-8; -*-
 
 import sys
 import locale
 
-from hyphenation import Hyphenation
-from options import options, replace_chars
+from fbless_lib.hyphenation import Hyphenation
+from fbless_lib.options import options, replace_chars
 
 
 #screen_cols = 80
@@ -16,14 +16,14 @@ hyph = Hyphenation()
 
 # u'\u2013' -> '--'
 # u'\u2014' -> '---'
-# u'\xa0'   -> неразрывный пробел
+# u'\xa0'   -> п·п∙п╒п▒п╙п╒п╘п╖п·п╘п  п═п╒п÷п▓п∙п°
 # u'\u2026' -> dots...
 # u'\xab'   -> '<<'
 # u'\xbb'   -> '>>'
 # u'\u201c' -> ``
 # u'\u201d' -> ''
 # u'\u201e' -> ,,
-# u'\xad'   -> мягкий перенос
+# u'\xad'   -> п²п║п≈п⌡п≥п  п═п∙п╒п∙п·п÷пё
 def replace(s):
     return (s
             .replace(u'\u2013', u'-')
@@ -230,7 +230,7 @@ class Paragraph:
                 len_line = sum(len(s) for s in ln
                                if not isinstance(s, (int, tuple)))
                 d = (max_len - len_line) / 2
-                spaces = ' ' * (self.left_indent + d)
+                spaces = ' ' * int(self.left_indent + d)
             elif self.justify == 'right':
                 len_line = sum(len(s) for s in ln
                                if not isinstance(s, (int, tuple)))
@@ -248,7 +248,7 @@ class Paragraph:
 
 
 if __name__ == '__main__':
-    s=unicode('Давно было готово заглавие, использующее титул замечательной монографии :вана Аксенова "Пикассо и окрестности". Предрешен был и тот свободный жанр "филологического романа", в котором написана моя любимая русская проза - от мандельштамовского "Разговора о Данте" до "Прогулок с Пушкиным" Синявского. Но что особенно важно, сама собой сформулировалась центральная тема - исповедь последнего советского поколения, голосом которого стал Сергей Довлатов.', 'koi8-r')
+    s='п╞ п╨п╟п╨ я┤п╣п╩п╬п╡п╣п╨ п╦я│п©п╬я─я┤п╣п╫п╫я▀п╧ п╦я│я┌п╬я─п╦я┤п╣я│п╨п╦п╪ п╬п╠я─п╟п╥п╬п╡п╟п╫п╦п╣п╪ п╡я│я▌ п╢п╬я─п╬пЁя┐ п╫п╣ п©п╬п╫п╦п╪п╟п╩ п©п╬я┤п╣п╪я┐ п╦пЁя─п╣ п©я─п╦п©п╦я│я▀п╡п╟я▌я┌ п╦я│я┌п╬я─п╦я┤п╣я│п╨я┐я▌ п╢п╬я│я┌п╬п╡п╣я─п╫п╬я│я┌я▄. п■п╣п╧я│я┌п╡п╦я┌п╣п╩я▄п╫п╬, п╡ п╢п╣я┌п╟п╩я▐я┘ я│я┘п╬п╢я│я┌п╡п╬ п╬я┤п╣п╡п╦п╢п╫п╬, п╫п╬ п╡ я├п╣п╩п╬п╪ RDR2 п╦п╪п╣п╣я┌ п╨я─п╟п╧п╫п╣ я│п╪я┐я┌п╫п╬п╣ п©я─п╣п╢я│я┌п╟п╡п╩п╣п╫п╦п╣ п╬ я┌п╬пЁп╢п╟я┬п╫п╦я┘ я│п╬п╠я▀я┌п╦я▐я┘ п╦ п╬п╠я┴п╣я│я┌п╡п╣п╫п╫я▀я┘ п©я─п╬я├п╣я│я│п╟я┘. п■п╟п╤п╣ п╣я│п╩п╦ п╡я▀ п╫п╣ я│п╬пЁп╩п╟я│п╦я┌п╣я│я▄ я│ п╡я▀п╡п╬п╢п╟п╪п╦, п╫п╟п╢п╣я▌я│я▄, я┐п╥п╫п╟п╣я┌п╣ я┤я┐я┌я▄ п╠п╬п╩я▄я┬п╣ п╬ я┌п╬п╧ я█п©п╬я┘п╣.'
     par=Paragraph(data=s, attrs=[(6, 10, attr.strong),
                                  (100, 240, attr.strong)])
     par.scr_cols = 48
@@ -256,26 +256,25 @@ if __name__ == '__main__':
     par.split_string()
     for l in par.lines:
         if 0:
-            print l
+            print (l)
         elif 0:
             for w in l:
                 if w == ' ':
-                    print '<sp>'
+                    print ('<sp>')
                 else:
-                    print w
+                    print (w)
         else:
             for w in l:
                 if isinstance(w, int):
-                    sys.stdout.write('<%d>' % w)
+                    #print('<%d>' % w, end='')
                     pass
                 elif isinstance(w, tuple):
-                    sys.stdout.write('<|>')
+                    #print('<|>', end='')
+                    pass
                 else:
-                    #print w,
-                    #sys.stdout.write('|')
-                    sys.stdout.write(w.encode('koi8-r', 'replace'))
-            print
-    print '~'*(par.scr_cols-par.right_indent)
+                    print(w, end='')
+            print ()
+    print ('~'*(par.scr_cols-par.right_indent))
 
     #par.print_str()
 ##     for s in par.lines:

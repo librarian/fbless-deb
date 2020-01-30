@@ -1,10 +1,10 @@
 #!/usr/bin/env python2.5
-# -*- mode: python; coding: koi8-r; -*-
+# -*- mode: python; coding: UTF-8; -*-
 # (c) Con Radchenko mailto:lankier@gmail.com
 
 import sys
 import locale
-from cStringIO import StringIO
+from io import StringIO
 import curses
 from fbless_lib.main import MainWindow
 

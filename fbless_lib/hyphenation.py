@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: koi8-r; -*-
+# -*- mode: python; coding: UTF-8; -*-
 #
 # $Id: hyphenation.py,v 1.2 2005/07/12 21:14:18 conr Exp $
 #
@@ -11,18 +11,18 @@ if __name__ == '__main__':
     dict_files_dir = 'hyph_dicts'
 else:
     dict_files_dir = os.path.join('fbless_lib', 'hyph_dicts')
-ru_dict_file = os.path.join(dict_files_dir, 'hyph_ru.dic')
+ru_dict_file = os.path.join('hyph_dicts', 'hyph_ru.dic')
 
-vowels = unicode('аеёиоуыэюяАЕЁИОУЫЭЮЯ', 'koi8-r')
-consonants = unicode('бвгджзйклмнпрстфхцчшщБВГДЖЗЙКЛМНПРСТФХЦЧШЩ', 'koi8-r')
-hardsoftsigns = unicode('ъьЪЬ', 'koi8-r')
+vowels = 'п╟п╣я▒п╦п╬я┐я▀я█я▌я▐п░п∙п│п≤п·пёп╚п╜п╝п╞'
+consonants = 'п╠п╡пЁп╢п╤п╥п╧п╨п╩п╪п╫п©я─я│я┌я└я┘я├я┤я┬я┴п▒п▓п⌠п■п√п≈п≥п п⌡п°п²п÷п═п║п╒п╓п╔п╕п╖п╗п╘'
+hardsoftsigns = 'я┼я▄п╙п╛'
 
 class Hyphenation:
 
     def __init__(self):
         self.hyph_pats = {}
 
-        # ф-ция переносов для русского языка
+        # п√-п⌠п≥п║ п═п∙п╒п∙п·п÷пёп÷п╖ п■п°п║ п╒п╔пёпёп⌡п÷п≈п÷ п║п╙п╘п⌡п▒
         self.ru_hyphenate_func = self.ru_hyphenate
         #self.ru_hyphenate_func = self.tex_hyphenate
 
@@ -35,7 +35,7 @@ class Hyphenation:
         self.dict_files_dir = dfd
 
         if not dfd:
-            print 'ERROR: can\'t read hyphenation files'
+            print ('ERROR: can\'t read hyphenation files')
             return
 
         self.langs = []
@@ -76,7 +76,7 @@ class Hyphenation:
         encoding = fd.readline().strip()
 
         for l in fd.readlines():
-            l = unicode(l, encoding).strip()
+            l = l.strip()
 
             ii = []
             i = 0
@@ -95,7 +95,7 @@ class Hyphenation:
 
 
     def hyphenate(self, word, lang='ru'):
-
+        #print(word)
         if len(word) < 4:
             return []
         if lang == 'no-hyphenate':
@@ -110,22 +110,24 @@ class Hyphenation:
             hyphenate_func = self.tex_hyphenate
 
         words_list = []
-        w = u''
-        ww = u''
+        w = ''
+        ww = ''
 
         # split words
         for i in word:
+            #print(i)
             if i.isalpha():
                 ww += i
             else:
                 if ww:
                     for j in hyphenate_func(ww, lang):
                         words_list.append(w+j)
+                        #print(w+j)
                 if i == '-':
                     words_list.append(w+ww)
                 w += ww+i
                 ww = u''
-
+        #print(words_list)
         if ww:
             for j in hyphenate_func(ww, lang):
                 words_list.append(w+j)
@@ -161,13 +163,12 @@ class Hyphenation:
 
             w += word[i]
             i += 1
-
         return wl
 
 
     def tex_hyphenate(self, word, lang='ru'):
 
-        if not self.hyph_pats.has_key(lang):
+        if lang not in self.hyph_pats :
             self.hyph_pats[lang] = self.read_patterns(lang)
         if not self.hyph_pats[lang]:
             return []
@@ -179,7 +180,7 @@ class Hyphenation:
 
         for a in range(len(w)+1):
             for b in range(a):
-                if hyph_pats.has_key(w[b:a]):
+                if w[b:a] in hyph_pats:
                     h = hyph_pats[w[b:a]]
                     #print '>>', w[b:a].encode('koi8-r'), h
                     for i, j in h:
@@ -205,28 +206,30 @@ if __name__ == '__main__':
     h=Hyphenation()
 
 ##     for i in range(10000):
-##         h.hyphenate(unicode('специалист', 'koi8-r'))
+##         h.hyphenate(unicode('пёп═п∙п⌠п≥п▒п°п≥пёп╓', 'koi8-r'))
 
 
     ## Russian
-    for w in ('стэнфорд',):
+    for w in ('я│я┌п╣п╫п╫-я└п╬я─п╢',):
+        #print(w)
         i = 0
-        hl = h.hyphenate(unicode(w, 'koi8-r'), 'ru-tex')
+        hl = h.hyphenate(w, 'ru-tex')
+        #print(hl)
         hl.reverse()
         for l in hl:
-            print l[i:].encode('koi8-r'),
+            print (l[i:],)
             i = len(l)
-        print w[i:]
-##     for w in ('пере-Стройка','безусловный','полу-остров','автоматизация',
-##               'спецотдел','специалист'):
-##         i = 0
-##         hl = h.hyphenate(unicode(w, 'koi8-r'), 'ru-tex')
-##         hl.reverse()
-##         for l in hl:
-##             print l[i:].encode('koi8-r'),
-##             i = len(l)
-##         print w[i:]
-
+        print (w[i:])
+"""    for w in ('п═п∙п╒п∙-я┐п╓п╒п÷п п⌡п▒','п▓п∙п╙п╔пёп°п÷п╖п·п╘п ','п═п÷п°п╔-п÷пёп╓п╒п÷п╖','п▒п╖п╓п÷п²п▒п╓п≥п╙п▒п⌠п≥п║',
+        'пёп═п∙п⌠п÷п╓п■п∙п°','пёп═п∙п⌠п≥п▒п°п≥пёп╓'):
+        i = 0
+        hl = h.hyphenate(w, 'ru-tex')
+        hl.reverse()
+        for l in hl:
+            print (l[i:],)
+            i = len(l)
+        print (w[i:])
+"""
     ## English
 ##     for w in ('power', 'gratuiTously', 'hyphenate', 'whole', 'paragraphs'):
 ##         for l in h.hyphenate(unicode(w, 'iso8859-1'), 'en'):
@@ -235,8 +238,8 @@ if __name__ == '__main__':
 
     ## German
 ##     for w in ('berichtet', 'Theodor', 'Holzkopf', 'erfunden',
-##               'promovierte', 'Doktor', 'Rechte', 'Эber', 'Thema',
-##               'BЖllerschЭsse', 'VЖlkerrecht'):
+##               'promovierte', 'Doktor', 'Rechte', 'я▄ber', 'Thema',
+##               'Bя├llerschя▄sse', 'Vя├lkerrecht'):
 ##         for l in h.hyphenate(unicode(w, 'iso8859-1'), 'de'):
 ##             print l.encode('iso8859-1')
 ##         print '-'*20
